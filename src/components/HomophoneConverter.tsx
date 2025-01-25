@@ -17,7 +17,8 @@ import {
   MenuList,
   MenuItem,
   Heading,
-  Image
+  Image,
+  Link
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { keyframes } from '@emotion/react';
@@ -285,7 +286,7 @@ const ConversionItem: React.FC<{
             <IconButton
               aria-label="复制转换结果"
               icon={<MdContentCopy />}
-              onClick={() => onCopy(item.results[1])}
+              onClick={() => onCopy(item.results && item.results.length > 0 ? item.results[0] : '')}
               title="复制转换结果"
             />
             <IconButton
@@ -314,7 +315,7 @@ const ConversionItem: React.FC<{
             转换结果：
           </Text>
           <Text>
-            {item.results[1]}
+            {item.results && item.results.length > 0 ? item.results[0] : '无结果'}
           </Text>
         </Box>
       </Box>
@@ -615,19 +616,39 @@ const HomophoneConverter: React.FC = () => {
             align="center"
             display={{ base: 'none', xl: 'flex' }}
           >
-            <Image
-              src="/assets/donate.jpg"
-              alt="捐赠二维码"
-              borderRadius="lg"
+            <Box
+              position="relative"
               width="200px"
               height="200px"
-              objectFit="cover"
+              borderRadius="lg"
+              overflow="hidden"
               boxShadow="lg"
               _hover={{
                 transform: 'scale(1.05)',
                 transition: 'transform 0.2s'
               }}
-            />
+            >
+              <Image
+                src="/assets/donate.jpg"
+                alt="捐赠二维码"
+                width="100%"
+                height="100%"
+                objectFit="cover"
+                fallback={
+                  <Box
+                    width="100%"
+                    height="100%"
+                    bg="gray.100"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    color="gray.500"
+                  >
+                    <Text>二维码加载中...</Text>
+                  </Box>
+                }
+              />
+            </Box>
             <Text
               fontSize="sm"
               color="gray.500"
@@ -638,6 +659,31 @@ const HomophoneConverter: React.FC = () => {
             </Text>
           </VStack>
         </HStack>
+
+        {/* 底部赞助链接 */}
+        <Box 
+          as="footer" 
+          width="100%" 
+          textAlign="center" 
+          mt={8} 
+          pt={4}
+          borderTop="1px"
+          borderColor={useColorModeValue('gray.200', 'gray.700')}
+        >
+          <Link
+            href="http://www.freecdn.vip/?zzwz"
+            target="_blank"
+            fontSize="sm"
+            color={useColorModeValue('gray.600', 'gray.400')}
+            _hover={{
+              color: useColorModeValue('blue.500', 'blue.300'),
+              textDecoration: 'none'
+            }}
+            title="免费云加速（FreeCDN），为您免费提供网站加速和网站防御（DDOS、CC攻击）"
+          >
+            本站由免费云加速（FreeCDN）提供网站加速和攻击防御服务
+          </Link>
+        </Box>
       </Box>
     </>
   );
