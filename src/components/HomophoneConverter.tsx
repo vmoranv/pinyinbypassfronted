@@ -286,7 +286,7 @@ const ConversionItem: React.FC<{
             <IconButton
               aria-label="复制转换结果"
               icon={<MdContentCopy />}
-              onClick={() => onCopy(item.results && item.results.length > 0 ? item.results[0] : '')}
+              onClick={() => onCopy(item.results[1])}
               title="复制转换结果"
             />
             <IconButton
@@ -315,7 +315,7 @@ const ConversionItem: React.FC<{
             转换结果：
           </Text>
           <Text>
-            {item.results && item.results.length > 0 ? item.results[0] : '无结果'}
+            {item.results[1]}
           </Text>
         </Box>
       </Box>
@@ -616,39 +616,19 @@ const HomophoneConverter: React.FC = () => {
             align="center"
             display={{ base: 'none', xl: 'flex' }}
           >
-            <Box
-              position="relative"
+            <Image
+              src="/assets/donate.jpg"
+              alt="捐赠二维码"
+              borderRadius="lg"
               width="200px"
               height="200px"
-              borderRadius="lg"
-              overflow="hidden"
+              objectFit="cover"
               boxShadow="lg"
               _hover={{
                 transform: 'scale(1.05)',
                 transition: 'transform 0.2s'
               }}
-            >
-              <Image
-                src="/assets/donate.jpg"
-                alt="捐赠二维码"
-                width="100%"
-                height="100%"
-                objectFit="cover"
-                fallback={
-                  <Box
-                    width="100%"
-                    height="100%"
-                    bg="gray.100"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    color="gray.500"
-                  >
-                    <Text>二维码加载中...</Text>
-                  </Box>
-                }
-              />
-            </Box>
+            />
             <Text
               fontSize="sm"
               color="gray.500"
@@ -661,28 +641,47 @@ const HomophoneConverter: React.FC = () => {
         </HStack>
 
         {/* 底部赞助链接 */}
-        <Box 
-          as="footer" 
-          width="100%" 
-          textAlign="center" 
-          mt={8} 
+        <Box
+          as="footer"
+          width="100%"
+          textAlign="center"
+          mt={8}
           pt={4}
-          borderTop="1px"
+          borderTop="1px solid"
           borderColor={useColorModeValue('gray.200', 'gray.700')}
         >
-          <Link
-            href="http://www.freecdn.vip/?zzwz"
-            target="_blank"
-            fontSize="sm"
-            color={useColorModeValue('gray.600', 'gray.400')}
-            _hover={{
-              color: useColorModeValue('blue.500', 'blue.300'),
-              textDecoration: 'none'
-            }}
-            title="免费云加速（FreeCDN），为您免费提供网站加速和网站防御（DDOS、CC攻击）"
+          <HStack
+            spacing={4}
+            justify="center"
+            align="center"
+            flexWrap="wrap"
           >
-            本站由免费云加速（FreeCDN）提供网站加速和攻击防御服务
-          </Link>
+            <Link
+              href="http://www.freecdn.vip/?zzwz"
+              isExternal
+              color={useColorModeValue('gray.600', 'gray.400')}
+              fontSize="sm"
+              _hover={{
+                color: useColorModeValue('blue.500', 'blue.300'),
+                textDecoration: 'none'
+              }}
+            >
+              本站由免费云加速（FreeCDN）提供网站加速和攻击防御服务
+            </Link>
+            <Link
+              href="http://www.freecdn.vip/?zzlogo"
+              isExternal
+              display={{ base: 'none', md: 'block' }}
+            >
+              <Image
+                src="http://www.freecdn.vip/images/zzlogo.png"
+                alt="免费云加速（FreeCDN），为您免费提供网站加速和网站防御（DDOS、CC攻击）"
+                width="150px"
+                height="80px"
+                objectFit="contain"
+              />
+            </Link>
+          </HStack>
         </Box>
       </Box>
     </>
