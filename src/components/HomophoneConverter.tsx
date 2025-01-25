@@ -31,9 +31,16 @@ import {
   MdLightMode,
   MdChevronRight,
   MdEdit,
+  MdExpandMore,
+  MdExpandLess,
 } from 'react-icons/md';
-import { loadDictionary, convertText } from '../utils/dictionary';
-import { loadFromLocalStorage, saveToLocalStorage } from '../utils/storage';
+import { FaGithub } from 'react-icons/fa';
+import {
+  loadDictionary, convertText
+} from '../utils/dictionary';
+import {
+  loadFromLocalStorage, saveToLocalStorage
+} from '../utils/storage';
 
 // 类型定义
 interface Timeline {
@@ -258,67 +265,58 @@ const ConversionItem: React.FC<{
   onDelete: (id: string) => void;
   onCopy: (text: string) => void;
 }> = ({ item, onDelete, onCopy }) => {
-  const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'light' ? 'gray.50' : 'gray.700';
-  const borderColor = colorMode === 'light' ? 'gray.200' : 'gray.600';
+  const [isExpanded, setIsExpanded] = useState(item.isExpanded);
 
   return (
     <Box
-      borderWidth="1px"
+      p={4}
+      bg={useColorModeValue('white', 'gray.800')}
       borderRadius="lg"
-      overflow="hidden"
+      boxShadow="sm"
       mb={4}
-      bg={bgColor}
-      borderColor={borderColor}
     >
-      <Box p={4}>
-        <Flex justifyContent="space-between" alignItems="center" mb={2}>
+      <VStack align="stretch" spacing={3}>
+        <HStack justify="space-between">
           <Text fontSize="sm" color="gray.500">
             {new Date(item.timestamp).toLocaleString()}
           </Text>
-          <ButtonGroup size="sm" isAttached variant="outline">
+          <HStack spacing={2}>
             <IconButton
-              aria-label="复制原文"
-              icon={<MdContentCopy />}
-              onClick={() => onCopy(item.originalText)}
-              title="复制原文"
+              aria-label={isExpanded ? "收起" : "展开"}
+              icon={isExpanded ? <MdExpandLess /> : <MdExpandMore />}
+              size="sm"
+              variant="ghost"
+              onClick={() => setIsExpanded(!isExpanded)}
             />
             <IconButton
-              aria-label="复制转换结果"
+              aria-label="复制"
               icon={<MdContentCopy />}
+              size="sm"
+              variant="ghost"
               onClick={() => onCopy(item.results[1])}
-              title="复制转换结果"
             />
             <IconButton
               aria-label="删除"
               icon={<MdDelete />}
+              size="sm"
+              variant="ghost"
               onClick={() => onDelete(item.id)}
-              title="删除"
             />
-          </ButtonGroup>
-        </Flex>
-
-        <Box mb={4}>
-          <Text fontWeight="bold" mb={1}>
-            原文：
-          </Text>
-          <Text>
-            {item.originalText}
-          </Text>
-          <Text fontSize="sm" color="gray.500" mt={1}>
-            {item.originalText.length} 字
-          </Text>
-        </Box>
-
-        <Box>
-          <Text fontWeight="bold" mb={1}>
-            转换结果：
-          </Text>
-          <Text>
-            {item.results[1]}
-          </Text>
-        </Box>
-      </Box>
+          </HStack>
+        </HStack>
+        {isExpanded && (
+          <>
+            <VStack align="stretch" spacing={2}>
+              <Text fontWeight="bold">原文：</Text>
+              <Text>{item.originalText}</Text>
+            </VStack>
+            <VStack align="stretch" spacing={2}>
+              <Text fontWeight="bold">转换结果：</Text>
+              <Text>{item.results[1]}</Text>
+            </VStack>
+          </>
+        )}
+      </VStack>
     </Box>
   );
 };
@@ -349,6 +347,7 @@ const HomophoneConverter: React.FC = () => {
   const [conversions, setConversions] = useState<ConversionItem[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isTimelineCollapsed, setIsTimelineCollapsed] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode();
   const bgRef = useRef<HTMLDivElement>(null);
 
@@ -546,8 +545,8 @@ const HomophoneConverter: React.FC = () => {
             onTimelineAction={handleTimelineAction}
             searchQuery=""
             onSearchChange={() => {}}
-            isCollapsed={false}
-            onToggleCollapse={() => {}}
+            isCollapsed={isTimelineCollapsed}
+            onToggleCollapse={() => setIsTimelineCollapsed(!isTimelineCollapsed)}
             conversions={conversions}
           />
 
@@ -629,14 +628,32 @@ const HomophoneConverter: React.FC = () => {
                 transition: 'transform 0.2s'
               }}
             />
-            <Text
-              fontSize="sm"
-              color="gray.500"
-              textAlign="center"
-              fontWeight="medium"
-            >
-              捐赠下开发者谢谢喵~
-            </Text>
+            <VStack spacing={2}>
+              <Text
+                fontSize="sm"
+                color="gray.500"
+                textAlign="center"
+                fontWeight="medium"
+              >
+                捐赠下开发者谢谢喵~
+              </Text>
+              <Link
+                href="https://github.com/vmoranv/pinyinbypassfronted"
+                isExternal
+                fontSize="sm"
+                color="blue.500"
+                _hover={{
+                  color: 'blue.600',
+                  textDecoration: 'none'
+                }}
+                display="flex"
+                alignItems="center"
+                gap={1}
+              >
+                <Box as={FaGithub} fontSize="lg" />
+                点个star谢谢喵~
+              </Link>
+            </VStack>
           </VStack>
         </HStack>
 
