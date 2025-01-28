@@ -149,6 +149,7 @@ const TimelineList: React.FC<{
       boxShadow="md"
       height="calc(100vh - 200px)"
     >
+    <SpeedInsights />
       <VStack spacing={0} align="stretch" height="100%">
         <HStack 
           p={4} 
